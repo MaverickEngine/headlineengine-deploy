@@ -39,5 +39,11 @@ Powerwords are emotional words. You can set your own, or use the words from [Ran
 
 == Changelog ==
 
+= 0.0.2 =
+* We have changed how we insert the element into the editor, to avoid fighting with other plugins.
+* The score title has been changed from "Headline Score" to "HeadlineEngine Score".
+* The score was made a bit smaller (40px from 60px).
+* Readme.txt has been brought into the main project.
+
 = 0.0.1 =
 * Initial release
