@@ -5,11 +5,11 @@
 * Description: What makes a good headline? Get instant headline analysis based on readability, length, and powerwords. Brought to you by MavEngine, &lt;em&gt;Powering Media. 
 * Author: MavEngine
 * Author URI: https://mavengine.com
-* Version: 0.0.2
+* Version: 0.0.3
 * License: GPLv2 or later
 * License URI: https://www.gnu.org/licenses/gpl-3.0.html
 * WC requires at least: 5.8.0
-* Tested up to: 5.8.2
+* Tested up to: 6.0
 *
 */
 if ( ! defined( 'ABSPATH' ) ) {
@@ -31,6 +31,12 @@ function headlineengine_admin_init() {
     new HeadlineEngineAdmin([]);
 }
 add_action( 'init', 'headlineengine_admin_init' );
+
+function headlineengine_api_init() {
+    require_once(plugin_dir_path( __FILE__ ) . 'includes/api/headlineengine-api.php' );
+    new HeadlineEngineAPI();
+}
+add_action( 'init', 'headlineengine_api_init' );
 
 // function taxonomy_engine_navigation_init() {
 //     require_once(plugin_basename('includes/navigation/taxonomyengine-navigation.php' ) );
