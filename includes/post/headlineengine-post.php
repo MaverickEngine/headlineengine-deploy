@@ -1,30 +1,29 @@
 <?php
+
 class HeadlineEnginePost {
-    public function __construct() {
-        add_action('edit_form_after_title', array( $this, 'edit_form_after_title' ) );
-    }
-
-    public function save_post( $post_id ) {
-        global $wpdb;
-        $post = get_post( $post_id );
-        if ( $post->post_type != 'post' ) {
-            return;
+    private function wpse_is_gutenberg_editor() { // https://wordpress.stackexchange.com/questions/309862/check-if-gutenberg-is-currently-in-use
+        if( function_exists( 'is_gutenberg_page' ) && is_gutenberg_page() ) { 
+            return true;
+        }   
+        
+        $current_screen = get_current_screen();
+        if ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) {
+            return true;
         }
+        return false;
     }
 
-    public function delete_post( $post_id ) {
-        global $wpdb;
-        $wpdb->delete( $wpdb->prefix . "headlineengine_posts", array( 'post_id' => $post_id ) );
-        $wpdb->delete( $wpdb->prefix . "headlineengine_titles", array( 'post_id' => $post_id ) );
+    public function __construct() {
+        add_action('admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
     }
 
-    public function edit_form_after_title() {
+    public function enqueue_scripts() {
         if (!in_array(get_post_type(), get_option('headlineengine_post_types'))) {
             return false;
         }
-        if (get_option('headlineengine_developer_mode')) {
-            wp_enqueue_script( "headlineengine-post-script", plugin_dir_url(__FILE__) . "../../dist/headlineengine-post.js", [], HEADLINEENGINE_SCRIPT_VERSION, true );
-            wp_enqueue_style( "headlineengine-post-style", plugin_dir_url(__FILE__) . "../../dist/headlineengine-post.css", [], HEADLINEENGINE_SCRIPT_VERSION );
+        if ($this->wpse_is_gutenberg_editor()) {
+            wp_enqueue_script( "headlineengine-post-script", plugin_dir_url(__FILE__) . "../../dist/headlineengine-gutenberg.js", [], HEADLINEENGINE_SCRIPT_VERSION, true );
+            wp_enqueue_style( "headlineengine-post-style", plugin_dir_url(__FILE__) . "../../dist/headlineengine-gutenberg.css", [], HEADLINEENGINE_SCRIPT_VERSION );
         } else {
             wp_enqueue_script( "headlineengine-post-script", plugin_dir_url(__FILE__) . "../../dist/headlineengine-post.js", [], HEADLINEENGINE_SCRIPT_VERSION, true );
             wp_enqueue_style( "headlineengine-post-style", plugin_dir_url(__FILE__) . "../../dist/headlineengine-post.css", [], HEADLINEENGINE_SCRIPT_VERSION );
@@ -35,7 +34,7 @@ class HeadlineEnginePost {
         $script .= "var headlineengine_length_range_min = " . intval(get_option('headlineengine_length_range_min', 40)) . ";";
         $script .= "var headlineengine_length_target = " . intval(get_option('headlineengine_length_target', 82)) . ";";
         $script .= "var headlineengine_length_range_max = " . intval(get_option('headlineengine_length_range_max', 90)) . ";";
-        $script .= "var headlineengine_powerwords_api = '/wp-json/headlineengine/v1/powerwords';";
+        $script .= "var headlineengine_powerwords_api = '" . get_rest_url( null, "/headlineengine/v1/powerwords") . "';";
         wp_add_inline_script('headlineengine-post-script', $script, 'before');
     }
 
