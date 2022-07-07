@@ -4,6 +4,7 @@ rm -rf includes
 rm -rf templates
 rm -rf data
 rm -rf dist
+rm -rf assets
 wget https://github.com/maverickengine/headline-engine/archive/refs/heads/main.zip
 unzip main.zip
 rm main.zip
