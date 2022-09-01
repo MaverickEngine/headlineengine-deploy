@@ -2,8 +2,6 @@
 
 Up your headline game. Get instant headline analysis based on readability, length, and powerwords. Built by [MavEngine](https://mavengine.com), &lt;em&gt;Powering Media.
 
-_Note: Only works in Classic Editor (for now), not Gutenberg editor._
-
 ## Features
 
 ### Readability
